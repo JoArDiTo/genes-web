@@ -7,6 +7,10 @@ import { AuthProvider } from './contexts/AuthContext';
 import { Toaster } from 'sonner';
 import { ProfilePage } from './pages/Profile';
 import ProtectedRoute from './components/ProtectedRoute';
+import { TestSelectorPage } from './pages/TestSelector';
+import { TestSelectedPage } from './pages/TestSelected';
+import { ResultSelectedPage } from './pages/ResultSelected';
+import { ResultSelectorPage } from './pages/ResultSelector';
 
 function App() {
   return (
@@ -17,8 +21,10 @@ function App() {
         <Route path="/iniciar-sesion" component={() => <LoginPage />} />
         <ProtectedRoute path="/perfil" component={() => <ProfilePage />} />
 
-        <ProtectedRoute path="/cuestionarios" component={() => <><h1>Ruta de estudiante</h1></>} />
-        <ProtectedRoute path="/resultados" component={() => <><h1>Ruta de estudiante</h1></>} />
+        <ProtectedRoute path="/cuestionarios" component={() => <TestSelectorPage />} />
+        <ProtectedRoute path="/cuestionarios/:id" component={() => <TestSelectedPage />} />
+        <ProtectedRoute path="/resultados" component={() => <ResultSelectorPage />} />
+        <ProtectedRoute path="/resultados/:id" component={() => <ResultSelectedPage />} />
 
         <ProtectedRoute path="/evaluaciones" isTeacherRoute={ true } component={() => <><h1>Ruta de docente</h1></>} />
         <Route path="*" component={() => <NotFoundPage />} />

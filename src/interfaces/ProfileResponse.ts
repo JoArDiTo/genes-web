@@ -1,5 +1,10 @@
 export interface ProfileResponse {
-  id: number;
+  userData: UserData;
+  studentData?: StudentData;
+}
+
+export interface UserData {
+  id: string;
   documentId: string;
   firstname: string;
   lastname: string;
@@ -9,6 +14,11 @@ export interface ProfileResponse {
   phoneNumber: string;
   imageUrl: string;
   role: string;
-  createdAt: string;
-  updatedAt: string;
+}
+
+export interface StudentData {
+  id: string;
+  level: string;
+  grade: number;
+  section: string;
 }

@@ -18,8 +18,6 @@ export const LoginPage = () => {
     
     if (!email || !password) return;
 
-    console.log({ email: email.value, password: password.value });
-
     const data = await login(email.value, password.value)
 
     if (!data.token) return toast.error(data);

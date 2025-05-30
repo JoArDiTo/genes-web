@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState, type FC, type ReactNode } from 'react';
+import { createContext, useEffect, useState, type FC, type PropsWithChildren } from 'react';
 import type { UserDataToken } from '../interfaces/UserDataToken';
 import { toast } from 'sonner';
 import { useLocation } from 'wouter';
@@ -11,13 +11,9 @@ interface AuthContextProps {
   isLoading: boolean;
 }
 
-interface Props {
-  children: ReactNode;
-}
-
 export const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
-export const AuthProvider: FC<Props> = ({ children }: Props) => {
+export const AuthProvider: FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
   const [user, setUser] = useState<UserDataToken | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [location, setLocation] = useLocation();
