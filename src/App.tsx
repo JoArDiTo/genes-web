@@ -11,6 +11,7 @@ import { TestSelectorPage } from './pages/TestSelector';
 import { TestSelectedPage } from './pages/TestSelected';
 import { ResultSelectedPage } from './pages/ResultSelected';
 import { ResultSelectorPage } from './pages/ResultSelector';
+import { StudentSelector } from './pages/StudentSelector';
 
 function App() {
   return (
@@ -24,9 +25,12 @@ function App() {
         <ProtectedRoute path="/cuestionarios" component={() => <TestSelectorPage />} />
         <ProtectedRoute path="/cuestionarios/:id" component={() => <TestSelectedPage />} />
         <ProtectedRoute path="/resultados" component={() => <ResultSelectorPage />} />
+        {/* ↓ Ruta Estudiante/Docente, con componentes renderizados según el rol */}
         <ProtectedRoute path="/resultados/:id" component={() => <ResultSelectedPage />} />
 
-        <ProtectedRoute path="/evaluaciones" isTeacherRoute={ true } component={() => <><h1>Ruta de docente</h1></>} />
+        <ProtectedRoute path="/evaluaciones" isTeacherRoute={ true } component={() => <StudentSelector />} />
+        <ProtectedRoute path="/evaluaciones/estudiante/:id" isTeacherRoute={ true } component={() => <><p>Holaa</p></> } />
+        <ProtectedRoute path='/diagnosticar/:id' isTeacherRoute={ true } component={() => <><p>Holaa</p></>} />
         <Route path="*" component={() => <NotFoundPage />} />
       </Switch>
     </AuthProvider>
