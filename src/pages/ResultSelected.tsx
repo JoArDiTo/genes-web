@@ -4,8 +4,17 @@ import useFetch from "../hooks/useFetch";
 import type { TestPerformedSelected } from "../interfaces/TestPerformedSelected";
 import { getTestPerformedById } from "../lib/api";
 import { ArrowUpIcon } from "../icons/ArrowUp";
+import Loading from "../components/Loading";
+import ErrorContent from "../components/Error";
+import { useContext } from "react";
+import { AuthContext } from "../contexts/AuthContext";
+import { UserRole } from "../lib/enum";
 
 export const ResultSelectedPage = () => {
+  const authContext = useContext(AuthContext);
+  if (!authContext) throw new Error('LoginPage must be used within an AuthProvider');
+
+  const { user } = authContext;
   const [match, params] = useRoute("/resultados/:id");
   if (!match) return <Redirect to="/resultados" />
 
@@ -22,16 +31,22 @@ export const ResultSelectedPage = () => {
           Volver
         </a>
         <h1 className="text-2xl font-bold">Resultados</h1>
-        {resultLoading && <p>Cargando...</p>}
-        {resultError && <p className="text-red-500">Error al cargar los resultados.</p>}
-        {resultData && (
+        {resultLoading && <Loading />}
+        {resultError && <ErrorContent />}
+        {!resultLoading && !resultError && resultData && (
           <div className="mt-4">
             <header className="mb-6">
               <h2 className="text-xl font-semibold">{resultData.templateTest.name}</h2>
               <p className="text-gray-600">{resultData.templateTest.description}</p>
-              <p className="mt-2">Puntaje: <span className="font-bold">{resultData.score}</span></p>
-              <p className="mt-1 text-sm text-gray-500">Interpretación: {resultData.interpretation}</p>
               <p className="mt-1 text-xs text-gray-400">Realizado el: {new Date(resultData.createdAt).toLocaleString()}</p>
+              {
+                user?.role === UserRole.TEACHER && (
+                  <>
+                    <p className="mt-2">Puntaje: <span className="font-bold">{resultData.score}</span></p>
+                    <p className="mt-1 text-sm text-gray-500">Interpretación: {resultData.interpretation}</p>
+                  </>
+                )
+              }
             </header>
             <main>
               <h3 className="text-lg font-semibold mb-2">Preguntas y respuestas:</h3>

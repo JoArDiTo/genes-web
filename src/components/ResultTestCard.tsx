@@ -1,17 +1,25 @@
-import { Link } from "wouter"
 import type { TestPerformed } from "../interfaces/TestPerfomed"
 import { NoteIcon } from "../icons/Note"
+import { useContext } from "react";
+import { AuthContext } from "../contexts/AuthContext";
+import { UserRole } from "../lib/enum";
 
-export const TestPerformedCard = (test: TestPerformed) => {
-  const { id, templateTest, createdAt, score } = test
+export const TestPerformedCard = ({ test }: { test:TestPerformed }) => {
+  const authContext = useContext(AuthContext);
+  if (!authContext) throw new Error('LoginPage must be used within an AuthProvider');
+
+  const { user } = authContext;
+  const { templateTest, createdAt, score } = test
 
   return (
-    <Link href={`/resultados/${id}`} key={id} className="w-full max-w-xs p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100">
-      <article className="w-full flex flex-col items-center justify-center">
-        <h2 className="text-xl font-semibold"><NoteIcon/> {templateTest}</h2>
-        <p className="text-gray-500">Fecha: {new Date(createdAt).toLocaleDateString()}</p>
-        <p className="text-gray-500">Resultado: {score}</p>
-      </article>
-    </Link>
+    <article className="block w-full max-w-md p-4 sm:p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 transition-colors">
+      <p className="mb-2 text-xl sm:text-2xl font-semibold tracking-tight text-gray-900 flex items-center gap-2">
+        <NoteIcon /> {templateTest}
+      </p>
+      <div className="flex justify-between">
+        <p className="font-semibold">Fecha: {new Date(createdAt).toLocaleDateString()}</p>
+        { user?.role === UserRole.TEACHER && <p className="text-gray-500">Resultado: {score}</p> }
+      </div>
+    </article>
   ) 
 }

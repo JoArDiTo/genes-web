@@ -1,6 +1,6 @@
 import type { StudentResponse } from "../interfaces/Student"
 
-export const StudentCard = (data: StudentResponse) => {
+export const StudentCard = ({ data }: { data: StudentResponse}) => {
   const { user, student } = data;
   
   return (

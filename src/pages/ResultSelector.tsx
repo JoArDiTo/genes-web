@@ -6,6 +6,9 @@ import { AuthContext } from "../contexts/AuthContext";
 import { getTestsPerformed } from "../lib/api";
 import { TestPerformedCard } from "../components/ResultTestCard";
 import { SelectorContainer } from "../components/SelectorContainer";
+import Loading from "../components/Loading";
+import ErrorContent from "../components/Error";
+import { Link } from "wouter";
 
 export const ResultSelectorPage = () => {
   const authContext = useContext(AuthContext);
@@ -24,29 +27,19 @@ export const ResultSelectorPage = () => {
     <MainLayout>
       <SelectorContainer>
         <h1 className="text-2xl font-bold mb-5">Resultados</h1>
-        {
-          testsPerformedLoading
-          ? (
-            <div className="flex items-center justify-center w-full h-full py-10">
-              <span className="loader">Cargando datos...</span>
-            </div>
-          )
-          : testsPerformedError
-          ? (
-            <div className="flex items-center justify-center w-full h-full py-10">
-              <p className="text-red-500">Ocurrió un error al cargar el perfil.</p>
-            </div>
-          )
-          : testsPerformedData && (
-            <div className="flex flex-wrap justify-center gap-5">
-              {
-                testsPerformedData.map((test) => (
-                 <TestPerformedCard key={test.id} {...test} />
-                ))
-              }
-            </div>
-          )
-        }
+        {testsPerformedLoading && <Loading />}
+        {testsPerformedError && <ErrorContent />}
+        {!testsPerformedLoading && !testsPerformedError && testsPerformedData && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 justify-items-center">
+            {
+              testsPerformedData.map((test) => (
+                <Link key={test.id} href={`/resultados/${test.id}`}>	
+                  <TestPerformedCard test={test} />
+                </Link>
+              ))
+            }
+          </div>
+        )}
       </SelectorContainer>
     </MainLayout>
   )

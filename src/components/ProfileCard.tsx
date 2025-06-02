@@ -1,7 +1,7 @@
 import type { ProfileResponse } from "../interfaces/ProfileResponse"
 import { UserRole } from "../lib/enum"
 
-export const ProfileCard = (profile: ProfileResponse) => {
+export const ProfileCard = ({ profile }: { profile: ProfileResponse }) => {
   const { userData: user, studentData: student } = profile;
   
   const handleOpenModal = () => {
@@ -21,6 +21,8 @@ export const ProfileCard = (profile: ProfileResponse) => {
         <p className="text-sm sm:text-lg font-semibold">{ user.role === UserRole.STUDENT ? "ESTUDIANTE" : "DOCENTE" }</p>
       </header>
       <main className="w-6/7 flex flex-col pb-8 [&>p]:text-sm [&>p]:sm:text-lg [&>p]:flex [&>p]:flex-wrap [&>p]:justify-between [&>p]:text-gray-600">
+        <h2 className="text-lg font-semibold">Información personal</h2>
+        <hr />
         <p><strong>DNI: </strong>{ user.documentId }</p>
         <p><strong>Correo: </strong>{user.email}</p>
         <p><strong>Teléfono: </strong>{ user.phoneNumber }</p>
@@ -29,6 +31,8 @@ export const ProfileCard = (profile: ProfileResponse) => {
         {
           user.role === UserRole.STUDENT && student && (
             <>
+              <h2 className="pt-3 text-lg font-semibold">Información académica</h2>
+              <hr />
               <p><strong>Grado: </strong>{ student.grade }</p>
               <p><strong>Nivel: </strong>{ student.level }</p>
               <p><strong>Salón: </strong>{ student.section }</p>

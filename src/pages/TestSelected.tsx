@@ -6,6 +6,8 @@ import type { TemplateTestSelected } from "../interfaces/TemplateTestSelected";
 import { useState } from "react";
 import { ArrowUpIcon } from "../icons/ArrowUp";
 import { toast } from "sonner";
+import Loading from "../components/Loading";
+import ErrorContent from "../components/Error";
 
 export const TestSelectedPage = () => {
   const [match, params] = useRoute("/cuestionarios/:id");
@@ -41,9 +43,6 @@ export const TestSelectedPage = () => {
     }
     
     const { id: templateTestDataId } = templateTestData;
-
-    console.log(templateTestDataId, answers, sum)
-
     await sendTest(templateTestDataId, answers, sum)
 
     navigate("/cuestionarios")
@@ -63,17 +62,9 @@ export const TestSelectedPage = () => {
   return (
     <MainLayout>
       <section className="container mx-auto p-4">
-        {templateTestLoading 
-        ? (
-          <div className="flex items-center justify-center w-full h-full py-10">
-            <span className="loader">Cargando datos...</span>
-          </div>
-        ) : templateTestError 
-        ? (
-          <div className="flex items-center justify-center w-full h-full py-10">
-            <p className="text-red-500">Ocurrió un error al cargar el perfil.</p>
-          </div>
-        ) : templateTestData && (
+        {templateTestLoading && <Loading />}
+        {templateTestError && <ErrorContent />}
+        {templateTestData && (
           <form onSubmit={handleSubmit} className="w-full flex flex-col xl:flex-row justify-center gap-4 py-10">
             <section className="xl:max-w-lg">
               <article className="bg-white rounded-2xl shadow-md p-6">
@@ -128,8 +119,8 @@ export const TestSelectedPage = () => {
               </div>
             </section>
           </form>
-        )
-        }
+        )}
+      
         <a className="fixed aspect-square bg-sky-300 p-3 rounded-lg left-5 bottom-5 transition hover:scale-110" href="#top">
           <ArrowUpIcon />
         </a>
