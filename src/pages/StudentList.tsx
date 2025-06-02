@@ -2,7 +2,7 @@ import { useState } from "react"
 import { StudentCard } from "../components/StudentCard"
 import type { StudentResponse } from "../interfaces/Student"
 import { SECTIONS, GENDER, GRADE } from "../lib/enum"
-
+import { Link } from 'wouter'
 
 export const StudentList = ({ students }: { students: StudentResponse[] }) => {
   const [search, setSearch] = useState<{ name: string, gender: string, section: string, grade: number }>({
@@ -30,18 +30,18 @@ export const StudentList = ({ students }: { students: StudentResponse[] }) => {
 
   return (
     <>
-      <section className="w-full mb-4">
-        <label>
+      <section className="w-full pb-5 flex items-center flex-col xl:flex-row gap-3">
+        <label className="w-full">
           <p className="font-semibold">Filtrar por nombres y apellidos</p>
           <input
             type="text"
-            placeholder="Buscar estudiante por nombres y apellidos"
+            placeholder="Buscar por nombres y apellidos"
             value={search.name}
             onChange={(e) => setSearch(prev => ({ ...prev, name: e.target.value }))}
-            className="w-full max-w-2xl p-2 border border-gray-300 rounded"
+            className="w-full p-2 border border-gray-300 rounded mt-2"
           />
         </label>
-        <div className="mt-5 w-full flex flex-col justify-between gap-3 sm:flex-row [&>label]:w-full [&>label>p]:inline [&>label>p]:font-semibold">
+        <div className="w-full flex flex-col justify-between gap-3 sm:flex-row [&>label>p]:inline [&>label>p]:font-semibold">
           <label>
             <p>Filtrar por género</p>
             <select
@@ -87,9 +87,11 @@ export const StudentList = ({ students }: { students: StudentResponse[] }) => {
           </label>
         </div>
       </section>
-      <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center">
+      <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6 justify-items-center">
         {filteredStudents.map((data) => (
-          <StudentCard key={data.user.id} {...data} />
+          <Link className="w-full" key={data.user.id} href="#">
+            <StudentCard {...data} />
+          </Link>
         ))}
       </section>
     </>
