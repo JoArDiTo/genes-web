@@ -9,9 +9,10 @@ import { ProfilePage } from './pages/Profile';
 import ProtectedRoute from './components/ProtectedRoute';
 import { TestSelectorPage } from './pages/TestSelector';
 import { TestSelectedPage } from './pages/TestSelected';
-import { ResultSelectedPage } from './pages/ResultSelected';
+import { ResultSelectedPage } from './sections/home/ResultSelected';
 import { ResultSelectorPage } from './pages/ResultSelector';
 import { StudentSelector } from './pages/StudentSelector';
+import { StudentSelected } from './pages/StudentSelected';
 
 function App() {
   return (
@@ -29,7 +30,7 @@ function App() {
         <ProtectedRoute path="/resultados/:id" component={() => <ResultSelectedPage />} />
 
         <ProtectedRoute path="/evaluaciones" isTeacherRoute={ true } component={() => <StudentSelector />} />
-        <ProtectedRoute path="/evaluaciones/estudiante/:id" isTeacherRoute={ true } component={() => <><p>Holaa</p></> } />
+        <ProtectedRoute path="/evaluaciones/estudiante/:id" isTeacherRoute={ true } component={() => <StudentSelected /> } />
         <ProtectedRoute path='/diagnosticar/:id' isTeacherRoute={ true } component={() => <><p>Holaa</p></>} />
         <Route path="*" component={() => <NotFoundPage />} />
       </Switch>

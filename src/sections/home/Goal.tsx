@@ -1,6 +1,6 @@
-import { GroupIcon } from "../icons/Group"
-import { HearthIcon } from "../icons/Hearth"
-import { NoteIcon } from "../icons/Note"
+import { GroupIcon } from "../../icons/Group"
+import { HearthIcon } from "../../icons/Hearth"
+import { NoteIcon } from "../../icons/Note"
 
 export const GoalSection = () => {
   return (

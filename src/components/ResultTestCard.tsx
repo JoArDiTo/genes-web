@@ -16,9 +16,12 @@ export const TestPerformedCard = ({ test }: { test:TestPerformed }) => {
       <p className="mb-2 text-xl sm:text-2xl font-semibold tracking-tight text-gray-900 flex items-center gap-2">
         <NoteIcon /> {templateTest}
       </p>
-      <div className="flex justify-between">
-        <p className="font-semibold">Fecha: {new Date(createdAt).toLocaleDateString()}</p>
-        { user?.role === UserRole.TEACHER && <p className="text-gray-500">Resultado: {score}</p> }
+      <div className="flex items-center justify-between">
+        <div className="flex flex-col [&>p]:font-semibold [&>p]:text-xs [&>p]:sm:text-base">
+          <p>{new Date(createdAt).toLocaleDateString()}</p>
+          <p>{new Date(createdAt).toLocaleTimeString()}</p>
+        </div>
+        { user?.role === UserRole.TEACHER && <p className="text-gray-500 text-xs sm:text-base">Resultado: {score}</p> }
       </div>
     </article>
   ) 

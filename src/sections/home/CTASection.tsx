@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { UserRole } from "../lib/enum"
-import { AuthContext } from "../contexts/AuthContext";
+import { UserRole } from "../../lib/enum"
+import { AuthContext } from "../../contexts/AuthContext";
 
 export const CtaSection = () => {
   const authContext = useContext(AuthContext);

@@ -1,4 +1,4 @@
-import { BulbIcon } from "../icons/Bulb"
+import { BulbIcon } from "../../icons/Bulb"
 
 export const BenefitSection = () => {
   return (
