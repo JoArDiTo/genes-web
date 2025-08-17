@@ -1,4 +1,5 @@
 import { SideBar, TopBar } from '@/components/navigation';
+import { useProvideAuth } from '@/hooks';
 import { Box, Flex } from '@chakra-ui/react';
 import { FiCheck, FiFile, FiGrid, FiUser, FiUsers } from 'react-icons/fi';
 import { Outlet } from 'react-router';
@@ -42,8 +43,11 @@ const bottomItems = [
 ];
 
 export const AccessDashboard = () => {
+  const { getUser } = useProvideAuth();
+  const user = getUser();
+  const role = user?.role;
   const mainItemsFiltered = mainItems.filter(
-    (item) => item.role === null || item.role === 'TEACHER',
+    (item) => item.role === null || item.role === role,
   );
 
   return (

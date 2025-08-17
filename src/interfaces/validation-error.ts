@@ -1,4 +1,4 @@
-export interface FieldError {
+export interface ValidationError {
   email?: string;
   password?: string;
 }

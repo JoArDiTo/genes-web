@@ -14,10 +14,12 @@ export default tseslint.config([
     extends: [
       js.configs.recommended,
       ...tseslint.configs.recommendedTypeChecked,
-      ...reactHooks.configs['recommended-latest'],
-      reactRefresh.configs.vite,
       eslintPluginPrettierRecommended,
     ],
+    plugins: {
+      'react-hooks': reactHooks,
+      'react-refresh': reactRefresh,
+    },
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
@@ -27,6 +29,8 @@ export default tseslint.config([
       },
     },
     rules: {
+      // React Hooks rules
+      ...reactHooks.configs.recommended.rules,
       // React Refresh rules
       'react-refresh/only-export-components': [
         'warn',

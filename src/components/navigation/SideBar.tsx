@@ -1,7 +1,8 @@
+import { useProvideAuth } from '@/hooks';
 import { Box, Flex, Image, Separator, Stack, Text } from '@chakra-ui/react';
 import * as React from 'react';
 import { FiLogOut } from 'react-icons/fi';
-import { Link, useLocation, useNavigate } from 'react-router';
+import { Link, useLocation } from 'react-router';
 
 interface SidebarItemProps {
   href: string;
@@ -11,13 +12,13 @@ interface SidebarItemProps {
 }
 
 interface SideBarProps {
-  mainItems: Array<SidebarItemProps>;
-  bottomItems: Array<SidebarItemProps>;
+  mainItems: SidebarItemProps[];
+  bottomItems: SidebarItemProps[];
 }
 
 export const SideBar = ({ mainItems, bottomItems }: SideBarProps) => {
-  const navigate = useNavigate();
-  const handleLogout = () => navigate('/auth/login');
+  const { logout } = useProvideAuth();
+  const handleLogout = () => logout();
 
   return (
     <Box

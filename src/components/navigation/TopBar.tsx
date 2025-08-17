@@ -8,10 +8,13 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { Avatar } from '../ui';
+import { useProvideAuth } from '@/hooks';
 
 export const TopBar = () => {
-  const name = 'JOSE ARMANDO DIAZ TORRES';
-  const role = 'TEACHER';
+  const { getUserCookie } = useProvideAuth();
+  const user = getUserCookie();
+  const name = user?.name;
+  const role = user?.role;
   const roleDisplay = role === 'TEACHER' ? 'Docente' : 'Estudiante';
 
   return (

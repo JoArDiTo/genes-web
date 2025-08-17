@@ -1,5 +1,6 @@
-import { Button, Field, InputGroup } from '@/components/ui';
-import type { FieldError } from '@/interfaces';
+import { Alert, Button, Field, InputGroup } from '@/components/ui';
+import { useProvideAuth } from '@/hooks';
+import type { ValidationError } from '@/interfaces';
 import {
   Box,
   Flex,
@@ -11,7 +12,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LuEye, LuEyeOff, LuLock, LuMail } from 'react-icons/lu';
 import { useNavigate } from 'react-router';
 
@@ -19,17 +20,25 @@ export const LoginUserView = () => {
   const bgImage = 'url(/images/bg-login.webp)';
   const logoImage = '/logo.svg';
 
-  const navigate = useNavigate();
+  const { login, isLoading, getToken, error: authError } = useProvideAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState<FieldError | null>(null);
+  const [error, setError] = useState<ValidationError | null>(null);
 
   const handleTogglePassword = () => setShowPassword(!showPassword);
 
+  const token = getToken();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (token) {
+      void navigate('/');
+    }
+  }, [token, navigate]);
+
   const validateFields = () => {
-    const newErrors: FieldError = {};
+    const newErrors: ValidationError = {};
     if (email.trim() === '') newErrors.email = 'El correo es obligatorio';
     if (password.trim() === '')
       newErrors.password = 'La contraseña es obligatoria';
@@ -44,7 +53,7 @@ export const LoginUserView = () => {
   const handleSubmit = () => {
     if (!validateFields()) return;
 
-    navigate('/');
+    void login(email, password);
   };
 
   return (
@@ -120,6 +129,9 @@ export const LoginUserView = () => {
                 >
                   Hola, por favor ingresa tus datos institucionales
                 </Text>
+
+                {authError && <Alert status="error" title={authError} />}
+
                 <VStack w="full" gap="20px">
                   <Stack w="full">
                     <Field
@@ -173,6 +185,7 @@ export const LoginUserView = () => {
                     size="sm"
                     _hover={{ bg: 'red.600' }}
                     onClick={handleSubmit}
+                    loading={isLoading}
                   >
                     Iniciar sesión
                   </Button>
