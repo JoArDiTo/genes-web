@@ -12,7 +12,7 @@ export interface LoginResponse {
 export interface ProfileResponse {
   user: UserDataResponse;
   person: PersonDataResponse;
-  academic: AcademicDataResponse;
+  academic: AcademicDataResponse | null;
 }
 
 export interface UserDataResponse {
