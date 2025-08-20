@@ -56,7 +56,7 @@ export const AccessDashboard = () => {
         <SideBar mainItems={mainItemsFiltered} bottomItems={bottomItems} />
         <Flex flex="1" direction="column" minW="0">
           <TopBar />
-          <Box overflowY="auto" p={4}>
+          <Box overflowY="auto" p={6}>
             <Outlet />
           </Box>
         </Flex>
