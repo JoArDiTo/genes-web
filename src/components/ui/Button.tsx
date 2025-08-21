@@ -1,14 +1,11 @@
 import {
   AbsoluteCenter,
   Button as ChakraButton,
-  IconButton as ChakraIconButton,
   Span,
   Spinner,
   type ButtonProps,
-  type CloseButtonProps,
 } from '@chakra-ui/react';
 import * as React from 'react';
-import { LuX } from 'react-icons/lu';
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   function Button({ loading, disabled, loadingText, children, ...rest }, ref) {
@@ -33,14 +30,3 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     );
   },
 );
-
-export const CloseButton = React.forwardRef<
-  HTMLButtonElement,
-  CloseButtonProps
->(function CloseButton(props, ref) {
-  return (
-    <ChakraIconButton variant="ghost" aria-label="Close" ref={ref} {...props}>
-      {props.children ?? <LuX />}
-    </ChakraIconButton>
-  );
-});

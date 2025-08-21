@@ -34,7 +34,7 @@ export const SideBar = ({ mainItems, bottomItems }: SideBarProps) => {
       flexDirection="column"
     >
       <Flex justify="center" align="center" mb="6">
-        <Image src="logo.svg" alt="Logo" />
+        <Image src="/logo.svg" alt="Logo" />
       </Flex>
       <Flex
         direction="column"
@@ -83,7 +83,7 @@ interface SideBarItemProps {
 
 const SidebarItem = ({ href, icon, label, ...atr }: SideBarItemProps) => {
   const location = useLocation();
-  const isActive = location.pathname === href;
+  const isActive = href && location.pathname === href;
 
   const ItemElement = ({ children }: React.PropsWithChildren) => {
     return (

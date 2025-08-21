@@ -1,6 +1,11 @@
 import { BrowserRouter, Route, Routes } from 'react-router';
 import { LoginUserView } from './views/auth/LoginUserView';
-import { HomeView, MyProfileView } from './views/access';
+import {
+  HomeView,
+  MyProfileView,
+  TestAvailablesView,
+  TestFormView,
+} from './views/access';
 import { AccessDashboard } from './views/layouts';
 import { AuthProvider } from './contexts';
 import { PrivateRoute } from './components/auth';
@@ -17,10 +22,10 @@ function App() {
           <Route element={<PrivateRoute />}>
             <Route element={<AccessDashboard />}>
               <Route index element={<HomeView />} />
-              <Route
-                path="cuestionarios"
-                element={<h1>Tests disponibles</h1>}
-              />
+              <Route path="cuestionarios">
+                <Route index element={<TestAvailablesView />} />
+                <Route path=":uuid" element={<TestFormView />} />
+              </Route>
               <Route
                 path="mis-evaluaciones"
                 element={<h1>Mis evaluaciones</h1>}
