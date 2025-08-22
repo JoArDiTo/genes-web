@@ -1,3 +1,7 @@
+export interface LoginResponse {
+  token: string;
+}
+
 export interface ProfileResponse {
   user: UserDataResponse;
   person: PersonDataResponse;
