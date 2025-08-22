@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useAxiosPrivate } from '../useAxiosPrivate';
-import type { ProfileResponse, Response } from '@/interfaces';
+import type { ProfileResponse, ApiResponse } from '@/interfaces';
 
 export const useReadProfile = () => {
   const axiosPrivate = useAxiosPrivate();
@@ -9,7 +9,7 @@ export const useReadProfile = () => {
     queryKey: ['profile'],
     queryFn: async () => {
       const response = await axiosPrivate.get('/users/profile');
-      const data = response.data as Response<ProfileResponse>;
+      const data = response.data as ApiResponse<ProfileResponse>;
       return data;
     },
   });

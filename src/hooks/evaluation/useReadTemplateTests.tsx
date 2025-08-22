@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useAxiosPrivate } from '../useAxiosPrivate';
-import type { Response, TemplateTestResponse } from '@/interfaces';
+import type { ApiResponse, TemplateTestResponse } from '@/interfaces';
 
 export const useReadTemplateTests = () => {
   const axiosPrivate = useAxiosPrivate();
@@ -9,7 +9,7 @@ export const useReadTemplateTests = () => {
     queryKey: ['template-tests'],
     queryFn: async () => {
       const response = await axiosPrivate.get('/evaluation/templates');
-      const data = response.data as Response<TemplateTestResponse>;
+      const data = response.data as ApiResponse<TemplateTestResponse>;
       return data;
     },
   });
