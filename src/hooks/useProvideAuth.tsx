@@ -1,4 +1,4 @@
-import type { LoginResponse, Response } from '@/interfaces';
+import type { LoginResponse, ApiResponse } from '@/interfaces';
 import axios, { isAxiosError } from '@/lib/axios';
 import { jwtDecode } from 'jwt-decode';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -94,7 +94,7 @@ export const useProvideAuth = () => {
         password,
       });
 
-      const data: Response<LoginResponse> = response.data;
+      const data: ApiResponse<LoginResponse> = response.data;
       const token = data.result?.token;
       if (!token) throw new Error(data.message);
 
@@ -113,7 +113,7 @@ export const useProvideAuth = () => {
       let errorMessage = 'Ocurrio un error en el servidor';
 
       if (isAxiosError(error) && error.response?.data) {
-        const data = error.response?.data as Response<LoginResponse>;
+        const data = error.response?.data as ApiResponse<LoginResponse>;
         errorMessage = data.message;
       }
       setError(errorMessage);
