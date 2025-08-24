@@ -1,7 +1,9 @@
 import { BrowserRouter, Route, Routes } from 'react-router';
 import { LoginUserView } from './views/auth/LoginUserView';
 import {
+  EvaluationDetailView,
   HomeView,
+  MyEvaluationsView,
   MyProfileView,
   TestAvailablesView,
   TestFormView,
@@ -26,9 +28,10 @@ function App() {
                 <Route index element={<TestAvailablesView />} />
                 <Route path=":uuid" element={<TestFormView />} />
               </Route>
+              <Route path="mis-evaluaciones" element={<MyEvaluationsView />} />
               <Route
-                path="mis-evaluaciones"
-                element={<h1>Mis evaluaciones</h1>}
+                path="evaluacion/:uuid"
+                element={<EvaluationDetailView />}
               />
               <Route path="estudiantes" element={<h1>Estudiantes</h1>} />
               <Route path="perfil" element={<MyProfileView />} />

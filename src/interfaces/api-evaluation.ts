@@ -25,3 +25,23 @@ export interface AlternativeResponse {
   content: string;
   value: number;
 }
+
+export interface MyEvaluationResponse {
+  testPerformed: TestPerformedResponse;
+  templateTest: TemplateTestResponse;
+  answers: AnswersResponse[];
+}
+
+export interface TestPerformedResponse {
+  id: string;
+  uuid: string;
+  score: string;
+  interpretation: string;
+  performedAt: Date;
+  available: boolean;
+}
+
+export interface AnswersResponse {
+  question: string;
+  alternative: string;
+}
