@@ -38,7 +38,7 @@ export interface TestPerformedResponse {
   score: string;
   interpretation: string;
   performedAt: Date;
-  available: boolean;
+  riskLevel: string;
 }
 
 export interface AnswersResponse {
