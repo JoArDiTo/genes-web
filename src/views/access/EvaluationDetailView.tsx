@@ -16,15 +16,28 @@ import { GiObservatory } from 'react-icons/gi';
 import { MdDateRange, MdQuiz, MdScore, MdSummarize } from 'react-icons/md';
 import { useParams } from 'react-router';
 import { EvaluationSummary, ObservationsList } from '../sections';
+import { useReadObservationsByTest } from '@/hooks/analysis';
 
 export const EvaluationDetailView = () => {
   const { uuid } = useParams<{ uuid: string }>();
 
-  const { data, isLoading, error } = useReadMyEvaluationByUUID(uuid ?? '');
+  const {
+    data: dataEvaluation,
+    isLoading: isLoadingEvaluation,
+    error: errorEvaluation,
+  } = useReadMyEvaluationByUUID(uuid ?? '');
 
-  const evaluation = data?.result;
+  const evaluation = dataEvaluation?.result;
 
-  if (isLoading) {
+  const {
+    data: dataObservations,
+    isLoading: isLoadingObservations,
+    error: errorObservations,
+  } = useReadObservationsByTest(evaluation?.testPerformed.id ?? '');
+
+  const observations = dataObservations?.results;
+
+  if (isLoadingEvaluation || isLoadingObservations) {
     return (
       <Flex justify="center" align="center" minH="400px">
         <Spinner size="xl" color="blue.500" />
@@ -32,7 +45,7 @@ export const EvaluationDetailView = () => {
     );
   }
 
-  if (error) {
+  if (errorEvaluation || errorObservations) {
     return (
       <Alert
         title="Error al cargar el test"
@@ -140,7 +153,7 @@ export const EvaluationDetailView = () => {
           <EvaluationSummary answers={answers} />
         </Tabs.Content>
         <Tabs.Content value="observations">
-          <ObservationsList />
+          <ObservationsList observations={observations || []} />
         </Tabs.Content>
       </Tabs.Root>
     </Stack>
