@@ -9,3 +9,5 @@ export * from './Dialog';
 export * from './Modal';
 export * from './Tooltip';
 export * from './RadioCard';
+export * from './CustomSelect';
+export * from './Pagination';

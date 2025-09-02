@@ -2,9 +2,11 @@ import { BrowserRouter, Route, Routes } from 'react-router';
 import { LoginUserView } from './views/auth/LoginUserView';
 import {
   EvaluationDetailView,
+  EvaluationsByStudentView,
   HomeView,
   MyEvaluationsView,
   MyProfileView,
+  StudentAvailablesView,
   TestAvailablesView,
   TestFormView,
 } from './views/access';
@@ -33,7 +35,10 @@ function App() {
                 path="evaluacion/:uuid"
                 element={<EvaluationDetailView />}
               />
-              <Route path="estudiantes" element={<h1>Estudiantes</h1>} />
+              <Route path="estudiantes">
+                <Route index element={<StudentAvailablesView />} />
+                <Route path=":uuid" element={<EvaluationsByStudentView />} />
+              </Route>
               <Route path="perfil" element={<MyProfileView />} />
             </Route>
           </Route>

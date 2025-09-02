@@ -60,7 +60,7 @@ export const Modal: React.FC<ModalProps> = ({
     >
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
       <DialogContent
-        bg={{ base: 'white', _dark: 'gray.800' }}
+        bg="white"
         ref={contentRef}
         w={size}
         maxW={size}
