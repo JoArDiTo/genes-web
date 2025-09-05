@@ -37,7 +37,14 @@ function App() {
               />
               <Route path="estudiantes">
                 <Route index element={<StudentAvailablesView />} />
-                <Route path=":uuid" element={<EvaluationsByStudentView />} />
+                <Route
+                  path=":userUUID"
+                  element={<EvaluationsByStudentView />}
+                />
+                <Route
+                  path=":userUUID/evaluacion/:uuid"
+                  element={<EvaluationDetailView />}
+                />
               </Route>
               <Route path="perfil" element={<MyProfileView />} />
             </Route>
