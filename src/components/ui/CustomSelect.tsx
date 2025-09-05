@@ -21,8 +21,8 @@ interface CustomSelectProps
   > {
   label?: string;
   placeholder?: string;
-  value?: string | number;
-  onChange: (value?: string | number) => void;
+  value?: string | number | null;
+  onChange: (value?: string | number | null) => void;
   items: SelectItem[];
   groupBy?: (item: SelectItem) => string;
   stringifyItem?: (item: SelectItem) => string;
@@ -83,7 +83,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
   return (
     <Select.Root
       collection={collection}
-      value={selectedItem ? [String(selectedItem.value)] : undefined}
+      value={selectedItem ? [String(selectedItem.value)] : []}
       onValueChange={(details) => {
         const selected = details.items[0] as SelectItem | undefined;
         onChange(selected?.value);
@@ -97,7 +97,13 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
           <SelectValue />
         </Select.Trigger>
         <Select.IndicatorGroup>
-          <Select.ClearTrigger />
+          <Select.ClearTrigger
+            onPointerDown={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onChange(null);
+            }}
+          />
           <Select.Indicator />
         </Select.IndicatorGroup>
       </Select.Control>

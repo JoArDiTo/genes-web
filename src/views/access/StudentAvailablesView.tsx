@@ -1,31 +1,38 @@
 import { StudentAvailablesTable } from '@/components/tables';
-import { useReadStudents } from '@/hooks/users';
+import { Button, CustomSelect, Field } from '@/components/ui';
+import { useDebounce } from '@/hooks';
+import { useReadStudents, type StudentsParams } from '@/hooks/users';
 import {
-  type Pagination,
   type PaginationResponse,
   type ProfileResponse as StudentResponse,
 } from '@/interfaces';
-import { Box, Flex, Heading, Spinner, Stack, Text } from '@chakra-ui/react';
-import { useState } from 'react';
+import {
+  Box,
+  Card,
+  Flex,
+  Heading,
+  Input,
+  SimpleGrid,
+  Stack,
+  Text,
+} from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
+import { FiTrash } from 'react-icons/fi';
 import { useNavigate } from 'react-router';
 
 export const StudentAvailablesView = () => {
   const navigate = useNavigate();
-  const [params, setParams] = useState<Pagination>({
+  const [params, setParams] = useState<StudentsParams>({
     page: 1,
     limit: 10,
+    name: null,
+    section: null,
+    grade: null,
+    gender: null,
   });
 
   const { data: dataStudents, isLoading: isLoadingStudents } =
     useReadStudents(params);
-
-  if (isLoadingStudents) {
-    return (
-      <Flex justify="center" align="center" minH="400px">
-        <Spinner size="xl" color="red.500" />
-      </Flex>
-    );
-  }
 
   const results = dataStudents?.results as StudentResponse[];
   const pagination = dataStudents?.pagination as PaginationResponse;
@@ -35,26 +42,140 @@ export const StudentAvailablesView = () => {
   };
 
   const handleChangePage = (newPage: number) => {
-    setParams((prev) => ({ ...prev, page: newPage }));
+    setParams((prev) =>
+      prev.page !== newPage ? { ...prev, page: newPage } : prev,
+    );
   };
 
   const handleChangeLimit = (newLimit: number) => {
-    setParams((prev) => ({ ...prev, limit: newLimit }));
+    setParams((prev) =>
+      prev.limit !== newLimit ? { ...prev, limit: newLimit } : prev,
+    );
+  };
+
+  const [filteredName, setFilteredName] = useState('');
+  const [filteredGrade, setFilteredGrade] = useState<number | null>(null);
+  const [filteredSection, setFilteredSection] = useState('');
+  const [filteredGender, setFilteredGender] = useState<string | null>(null);
+
+  const debouncedName = useDebounce(filteredName, 500);
+  const debouncedSection = useDebounce(filteredSection, 500);
+
+  useEffect(() => {
+    setParams((prev) => ({
+      ...prev,
+      name: debouncedName || null,
+      section: debouncedSection || null,
+      grade: filteredGrade ?? null,
+      gender: filteredGender ?? null,
+    }));
+    handleChangePage(1);
+  }, [debouncedName, debouncedSection, filteredGrade, filteredGender]);
+
+  const GradeOptions = [
+    { value: 1, label: '1er Grado' },
+    { value: 2, label: '2do Grado' },
+    { value: 3, label: '3er Grado' },
+    { value: 4, label: '4to Grado' },
+    { value: 5, label: '5to Grado' },
+  ];
+
+  const GenderOptions = [
+    { value: 'MALE', label: 'Masculino' },
+    { value: 'FEMALE', label: 'Femenino' },
+    { value: 'OTHER', label: 'Otro' },
+    { value: 'PREFER_NOT_TO_SAY', label: 'No especificado' },
+  ];
+
+  const hasActiveFilters =
+    filteredName !== '' ||
+    filteredGrade !== null ||
+    filteredSection !== '' ||
+    filteredGender !== null;
+
+  const cleanFilters = () => {
+    setFilteredName('');
+    setFilteredGrade(null);
+    setFilteredSection('');
+    setFilteredGender(null);
   };
 
   return (
     <Stack gap="6" p="6">
-      <Box>
-        <Heading size="xl" color="gray.800" mb="2">
-          Estudiantes Disponibles
-        </Heading>
-        <Text color="gray.600" fontSize="lg">
-          Explora los tests psicológicos disponibles para evaluación
-        </Text>
-      </Box>
+      <Card.Root
+        border="1px solid"
+        borderColor="gray.200"
+        borderRadius="lg"
+        overflow="hidden"
+      >
+        <Card.Header>
+          <Flex align="center" justify="space-between" w="full" py="2" px="4">
+            <Box>
+              <Heading size="xl" color="gray.800" mb="2">
+                Estudiantes Disponibles
+              </Heading>
+              <Text color="gray.600" fontSize="md">
+                Explora los tests psicológicos disponibles para evaluación
+              </Text>
+            </Box>
+            {hasActiveFilters && (
+              <Button
+                size="sm"
+                bg="red.50"
+                color="red.600"
+                border="1px solid"
+                borderColor="red.400"
+                onClick={cleanFilters}
+                _hover={{ bg: 'red.100' }}
+              >
+                <FiTrash /> Limpiar Filtros
+              </Button>
+            )}
+          </Flex>
+        </Card.Header>
+        <Card.Body>
+          <SimpleGrid columns={2} gap="4" w="full">
+            <Field label="Buscar por nombre">
+              <Input
+                placeholder="Buscar por nombre"
+                value={filteredName}
+                onChange={(e) => setFilteredName(e.target.value)}
+              />
+            </Field>
+            <Field label="Buscar por sección">
+              <Input
+                placeholder="Buscar por sección"
+                value={filteredSection}
+                onChange={(e) => setFilteredSection(e.target.value)}
+              />
+            </Field>
+            <Field label="Buscar por grado">
+              <CustomSelect
+                placeholder="Buscar por grado"
+                value={filteredGrade}
+                onChange={(option) =>
+                  setFilteredGrade(typeof option === 'number' ? option : null)
+                }
+                items={GradeOptions}
+              />
+            </Field>
+            <Field label="Buscar por género">
+              <CustomSelect
+                placeholder="Buscar por género"
+                value={filteredGender}
+                onChange={(option) =>
+                  setFilteredGender(typeof option === 'string' ? option : null)
+                }
+                items={GenderOptions}
+              />
+            </Field>
+          </SimpleGrid>
+        </Card.Body>
+      </Card.Root>
 
       <StudentAvailablesTable
-        students={results || []}
+        isLoading={isLoadingStudents}
+        students={results}
         pagination={pagination}
         handleStudentClick={handleStudentClick}
         onLimitChange={handleChangeLimit}
@@ -73,9 +194,7 @@ export const StudentAvailablesView = () => {
             <Text as="span" fontWeight="semibold">
               {pagination.total}
             </Text>{' '}
-            {pagination.total === 1
-              ? 'estudiante encontrado'
-              : 'estudiantes encontrados'}
+            {pagination.total === 1 ? 'estudiante' : 'estudiantes'} en total
           </Text>
         </Box>
       )}

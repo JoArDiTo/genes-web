@@ -5,6 +5,7 @@ import type {
   PaginationResponse,
 } from '@/interfaces';
 import { Pagination } from '../ui';
+import SkeletonTable from '../ui/SkeletonTable';
 
 interface RowProps {
   student: StudentResponse;
@@ -49,6 +50,7 @@ const Row = ({ student, index, handleStudentClick }: RowProps) => (
 );
 
 interface StudentAvailablesTableProps {
+  isLoading: boolean;
   students: StudentResponse[];
   pagination: PaginationResponse;
   handleStudentClick: (uuid: string) => void;
@@ -57,6 +59,7 @@ interface StudentAvailablesTableProps {
 }
 
 export const StudentAvailablesTable = ({
+  isLoading,
   students,
   pagination,
   handleStudentClick,
@@ -65,19 +68,19 @@ export const StudentAvailablesTable = ({
 }: StudentAvailablesTableProps) => {
   // Calcula el índice global según página y límite
   const startIndex = useMemo(
-    () => (pagination.page - 1) * pagination.limit,
-    [pagination.page, pagination.limit],
+    () => (isLoading ? 0 : (pagination.page - 1) * pagination.limit),
+    [isLoading, pagination?.page, pagination?.limit],
   );
 
-  const totalCount = pagination.total;
-  const pageSize = pagination.limit;
-  const currentPage = pagination.page;
   const pageSizeOptions = [
     { label: '5', value: 5 },
     { label: '10', value: 10 },
     { label: '20', value: 20 },
     { label: '50', value: 50 },
   ];
+  const totalCount = isLoading ? 0 : pagination?.total;
+  const pageSize = isLoading ? pageSizeOptions[1].value : pagination?.limit;
+  const currentPage = isLoading ? 1 : pagination?.page;
 
   return (
     <Box
@@ -95,7 +98,7 @@ export const StudentAvailablesTable = ({
                 fontWeight="semibold"
                 color="gray.700"
               >
-                #
+                N°
               </Table.ColumnHeader>
               <Table.ColumnHeader fontWeight="semibold" color="gray.700">
                 Nombre completo
@@ -131,7 +134,9 @@ export const StudentAvailablesTable = ({
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {students.length > 0 ? (
+            {isLoading ? (
+              <SkeletonTable columns={6} />
+            ) : students.length > 0 ? (
               students.map((student, idx) => (
                 <Row
                   key={idx}
