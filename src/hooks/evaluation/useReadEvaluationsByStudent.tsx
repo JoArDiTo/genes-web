@@ -2,20 +2,20 @@ import { useQuery } from '@tanstack/react-query';
 import { useAxiosPrivate } from '../useAxiosPrivate';
 import type { ApiResponse, MyEvaluationResponse } from '@/interfaces';
 
-export const useReadEvaluationsByStudent = (studentId: number) => {
+export const useReadEvaluationsByStudent = (id: number) => {
   const axiosPrivate = useAxiosPrivate();
 
   return useQuery({
-    queryKey: ['evaluations-by-student', studentId],
+    queryKey: ['evaluations-by-student', id],
     queryFn: async () => {
-      if (!studentId)
+      if (!id)
         throw new Error('Student ID is required to fetch the tests performed');
       const response = await axiosPrivate.get(
-        `/evaluation/tests-performed/student/${studentId}`,
+        `/evaluation/tests-performed/student/${id}`,
       );
       const data = response.data as ApiResponse<MyEvaluationResponse>;
       return data;
     },
-    enabled: !!studentId,
+    enabled: !!id,
   });
 };

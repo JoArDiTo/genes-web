@@ -1,11 +1,13 @@
 import { StudentAvailablesTable } from '@/components/tables';
 import { Button, CustomSelect, Field } from '@/components/ui';
+import ResponsiveBreadcrumb from '@/components/ui/ResponsiveBreadcrumb';
 import { useDebounce } from '@/hooks';
 import { useReadStudents, type StudentsParams } from '@/hooks/users';
 import {
   type PaginationResponse,
   type ProfileResponse as StudentResponse,
 } from '@/interfaces';
+import { EncryptedStorage, Encryptor } from '@/lib';
 import {
   Box,
   Card,
@@ -37,8 +39,24 @@ export const StudentAvailablesView = () => {
   const results = dataStudents?.results as StudentResponse[];
   const pagination = dataStudents?.pagination as PaginationResponse;
 
-  const handleStudentClick = (uuid: string) => {
-    void navigate(`/estudiantes/${uuid}`);
+  const handleStudentClick = (student: StudentResponse) => {
+    const encrypted = Encryptor.encrypt(student.academic?.id as number);
+    const encoded = encodeURIComponent(encrypted);
+    const { firstName, paternalSurname, maternalSurname } = student.person;
+    const { email, imageUrl } = student.user;
+    const { level, grade, section } = student.academic!;
+
+    const fullName = `${firstName} ${paternalSurname} ${maternalSurname}`;
+    const studentStorage = {
+      fullName,
+      email,
+      imageUrl,
+      level,
+      grade,
+      section,
+    };
+    EncryptedStorage.save('studentStorage', studentStorage);
+    void navigate(`/estudiantes/${encoded}`);
   };
 
   const handleChangePage = (newPage: number) => {
@@ -100,8 +118,11 @@ export const StudentAvailablesView = () => {
     setFilteredGender(null);
   };
 
+  const BreadcrumbItems = [{ label: 'Estudiantes' }];
+
   return (
-    <Stack gap="6" p="6">
+    <Stack gap="8" mx="auto">
+      <ResponsiveBreadcrumb items={BreadcrumbItems} />
       <Card.Root
         border="1px solid"
         borderColor="gray.200"

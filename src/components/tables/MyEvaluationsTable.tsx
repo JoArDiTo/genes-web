@@ -1,5 +1,6 @@
 import type { MyEvaluationResponse } from '@/interfaces';
 import { Box, Table } from '@chakra-ui/react';
+import SkeletonTable from '../ui/SkeletonTable';
 
 const Row = ({
   item,
@@ -36,10 +37,12 @@ const Row = ({
 };
 
 export const MyEvaluationsTable = ({
-  tests,
+  tests = [],
+  isLoading,
   handleEvaluationClick,
 }: {
   tests: MyEvaluationResponse[];
+  isLoading: boolean;
   handleEvaluationClick: (uuid: string) => void;
 }) => {
   return (
@@ -80,7 +83,9 @@ export const MyEvaluationsTable = ({
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {tests.length > 0 ? (
+            {isLoading ? (
+              <SkeletonTable columns={4} />
+            ) : tests.length > 0 ? (
               tests.map((item, index) => (
                 <Row
                   key={item.testPerformed.id}

@@ -10,7 +10,7 @@ import SkeletonTable from '../ui/SkeletonTable';
 interface RowProps {
   student: StudentResponse;
   index: number;
-  handleStudentClick: (uuid: string) => void;
+  handleStudentClick: (student: StudentResponse) => void;
 }
 
 const Row = ({ student, index, handleStudentClick }: RowProps) => (
@@ -19,7 +19,7 @@ const Row = ({ student, index, handleStudentClick }: RowProps) => (
     onClick={(e) => {
       const target = e.target as HTMLElement;
       if (target.closest('button') || target.closest('a')) return;
-      handleStudentClick(student.user.uuid);
+      handleStudentClick(student);
     }}
     bg={index % 2 === 0 ? 'white' : 'gray.100'}
     cursor="pointer"
@@ -53,7 +53,7 @@ interface StudentAvailablesTableProps {
   isLoading: boolean;
   students: StudentResponse[];
   pagination: PaginationResponse;
-  handleStudentClick: (uuid: string) => void;
+  handleStudentClick: (student: StudentResponse) => void;
   onLimitChange: (limit: number) => void;
   onPageChange: (page: number) => void;
 }

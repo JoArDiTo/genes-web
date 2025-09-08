@@ -5,7 +5,7 @@ import type {
   ApiResponse,
 } from '@/interfaces';
 
-export const UseReadStudentById = (id: string) => {
+export const UseReadStudentById = (id: number) => {
   const axiosPrivate = useAxiosPrivate();
   return useQuery({
     queryKey: ['student-by-id', id],

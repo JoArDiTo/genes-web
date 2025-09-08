@@ -15,11 +15,15 @@ import { FaRegCommentDots } from 'react-icons/fa';
 import { GiObservatory } from 'react-icons/gi';
 import { MdDateRange, MdQuiz, MdScore, MdSummarize } from 'react-icons/md';
 import { useParams } from 'react-router';
-import { EvaluationSummary, ObservationsList } from '../sections';
+import { EvaluationSummary, GeminiCheck, ObservationsList } from '../sections';
 import { useReadObservationsByTest } from '@/hooks/analysis';
+import { useProvideAuth } from '@/hooks';
+import { BsRobot } from 'react-icons/bs';
 
 export const EvaluationDetailView = () => {
   const { uuid } = useParams<{ uuid: string }>();
+
+  const { user: dataUser } = useProvideAuth();
 
   const {
     data: dataEvaluation,
@@ -147,6 +151,12 @@ export const EvaluationDetailView = () => {
             <GiObservatory />
             Observaciones
           </Tabs.Trigger>
+          {dataUser?.role === 'TEACHER' && (
+            <Tabs.Trigger value="ai-check">
+              <BsRobot />
+              Consultar con Gemini
+            </Tabs.Trigger>
+          )}
           <Tabs.Indicator rounded="l2" />
         </Tabs.List>
         <Tabs.Content value="summary">
@@ -155,6 +165,11 @@ export const EvaluationDetailView = () => {
         <Tabs.Content value="observations">
           <ObservationsList observations={observations || []} />
         </Tabs.Content>
+        {dataUser?.role === 'TEACHER' && (
+          <Tabs.Content value="ai-check">
+            <GeminiCheck />
+          </Tabs.Content>
+        )}
       </Tabs.Root>
     </Stack>
   );
