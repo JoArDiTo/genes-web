@@ -4,3 +4,8 @@ export interface ObservationResponse {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface AiReportResponse {
+  sessionId: string;
+  report: string;
+}

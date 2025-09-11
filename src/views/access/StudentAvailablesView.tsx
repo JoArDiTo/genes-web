@@ -42,13 +42,16 @@ export const StudentAvailablesView = () => {
   const handleStudentClick = (student: StudentResponse) => {
     const encrypted = Encryptor.encrypt(student.academic?.id as number);
     const encoded = encodeURIComponent(encrypted);
-    const { firstName, paternalSurname, maternalSurname } = student.person;
+    const { firstName, paternalSurname, maternalSurname, birthDate, gender } =
+      student.person;
     const { email, imageUrl } = student.user;
     const { level, grade, section } = student.academic!;
 
     const fullName = `${firstName} ${paternalSurname} ${maternalSurname}`;
     const studentStorage = {
       fullName,
+      age: new Date().getFullYear() - new Date(birthDate).getFullYear(),
+      gender,
       email,
       imageUrl,
       level,

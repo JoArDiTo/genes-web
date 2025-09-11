@@ -9,3 +9,21 @@ export interface CreateTestPerformedRequest {
     }[];
   };
 }
+
+export interface GenerateReportRequest {
+  sessionId?: string;
+  templateTest: {
+    name: string;
+    description: string;
+    objectives: string;
+  };
+  student: {
+    name: string;
+    age: number;
+    gender: string;
+  };
+  answers: {
+    question: string;
+    alternative: string;
+  }[];
+}

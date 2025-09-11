@@ -167,7 +167,7 @@ export const EvaluationDetailView = () => {
         </Tabs.Content>
         {dataUser?.role === 'TEACHER' && (
           <Tabs.Content value="ai-check">
-            <GeminiCheck />
+            <GeminiCheck evaluation={evaluation} />
           </Tabs.Content>
         )}
       </Tabs.Root>
