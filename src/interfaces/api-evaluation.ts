@@ -33,7 +33,7 @@ export interface MyEvaluationResponse {
 }
 
 export interface TestPerformedResponse {
-  id: string;
+  id: number;
   uuid: string;
   score: string;
   interpretation: string;

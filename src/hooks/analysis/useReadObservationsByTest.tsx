@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useAxiosPrivate } from '../useAxiosPrivate';
 import type { ApiResponse, ObservationResponse } from '@/interfaces';
 
-export const useReadObservationsByTest = (id: string) => {
+export const useReadObservationsByTest = (id: number) => {
   const axiosPrivate = useAxiosPrivate();
 
   return useQuery({

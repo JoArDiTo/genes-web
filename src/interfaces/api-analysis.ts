@@ -9,3 +9,8 @@ export interface AiReportResponse {
   sessionId: string;
   report: string;
 }
+
+export interface AiValidationResponse {
+  sessionId: string;
+  validation: string;
+}

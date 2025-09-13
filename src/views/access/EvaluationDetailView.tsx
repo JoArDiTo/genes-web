@@ -37,7 +37,8 @@ export const EvaluationDetailView = () => {
     data: dataObservations,
     isLoading: isLoadingObservations,
     error: errorObservations,
-  } = useReadObservationsByTest(evaluation?.testPerformed.id ?? '');
+    refetch: fetchObservations,
+  } = useReadObservationsByTest(evaluation?.testPerformed.id ?? 0);
 
   const observations = dataObservations?.results;
 
@@ -167,7 +168,10 @@ export const EvaluationDetailView = () => {
         </Tabs.Content>
         {dataUser?.role === 'TEACHER' && (
           <Tabs.Content value="ai-check">
-            <GeminiCheck evaluation={evaluation} />
+            <GeminiCheck
+              evaluation={evaluation}
+              fetchObservations={fetchObservations}
+            />
           </Tabs.Content>
         )}
       </Tabs.Root>

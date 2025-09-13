@@ -1,10 +1,16 @@
-import { Alert, Button, toaster } from '@/components/ui';
-import { useGenerateReport } from '@/hooks/analysis';
+import { Button, toaster } from '@/components/ui';
+import {
+  useGenerateReport,
+  useSendObservation,
+  useValidateObservation,
+} from '@/hooks/analysis';
 import type {
   AiReportResponse,
+  AiValidationResponse,
   ApiResponse,
   GenerateReportRequest,
   MyEvaluationResponse,
+  ObservationResponse,
 } from '@/interfaces';
 import { EncryptedStorage } from '@/lib';
 import {
@@ -15,19 +21,37 @@ import {
   Icon,
   SimpleGrid,
   Text,
+  Textarea,
 } from '@chakra-ui/react';
+import type {
+  QueryObserverResult,
+  RefetchOptions,
+} from '@tanstack/react-query';
 import { useState } from 'react';
 import { BsRobot } from 'react-icons/bs';
 import { FiFile } from 'react-icons/fi';
 
 export const GeminiCheck = ({
   evaluation,
+  fetchObservations,
 }: {
   evaluation: MyEvaluationResponse | undefined;
+  fetchObservations: (
+    options?: RefetchOptions,
+  ) => Promise<QueryObserverResult<ApiResponse<ObservationResponse>, Error>>;
 }) => {
   const [aiReport, setAiReport] = useState<AiReportResponse | null>(null);
+  const [aiValidate, setAiValidate] = useState<AiValidationResponse | null>(
+    null,
+  );
+  const [observation, setObservation] = useState<string>('');
   const { mutate: generateReport, isPending: isGeneratingReport } =
     useGenerateReport();
+  const { mutate: validateObservation, isPending: isValidatingObservation } =
+    useValidateObservation();
+  const { mutate: sendObservation, isPending: isSendingObservation } =
+    useSendObservation();
+
   const studentStorage = EncryptedStorage.load('studentStorage') as {
     fullName: string;
     gender: string;
@@ -104,6 +128,75 @@ export const GeminiCheck = ({
     });
   };
 
+  const handleValidateObservation = () => {
+    if (!aiReport) {
+      toaster.create({
+        title: 'Ocurrio un error',
+        description: 'Hubo un error en el modelo de IA',
+        type: 'error',
+      });
+      return;
+    }
+
+    const payload = {
+      sessionId: aiReport.sessionId,
+      observation,
+    };
+
+    validateObservation(payload, {
+      onSuccess: (data: ApiResponse<AiValidationResponse>) => {
+        toaster.create({
+          title: 'Observación enviada',
+          description: 'La observación ha sido enviada correctamente',
+          type: 'success',
+        });
+        const validation = data.result as AiValidationResponse;
+        setAiValidate(validation);
+      },
+      onError: () => {
+        toaster.create({
+          title: 'Ocurrio un error',
+          description: 'No se pudo enviar la observación',
+          type: 'error',
+        });
+      },
+    });
+  };
+
+  const handleSendObservation = () => {
+    if (!evaluation) {
+      toaster.create({
+        title: 'Ocurrio un error',
+        description: 'No se pudo generar el análisis',
+        type: 'error',
+      });
+      return;
+    }
+
+    const payload = {
+      testPerformedId: evaluation.testPerformed.id,
+      content: observation,
+    };
+
+    sendObservation(payload, {
+      onSuccess: () => {
+        toaster.create({
+          title: 'Observación enviada con éxito',
+          type: 'success',
+        });
+        void fetchObservations();
+        setObservation('');
+        setAiValidate(null);
+      },
+      onError: () => {
+        toaster.create({
+          title: 'Error al enviar observación',
+          type: 'error',
+        });
+      },
+    });
+  };
+
   function formatReport(report: string) {
     const lines = report.split('\n');
     return lines.map((line, idx) => {
@@ -166,6 +259,7 @@ export const GeminiCheck = ({
               size="sm"
               loading={isGeneratingReport}
               onClick={handleGenerateReport}
+              disabled={isValidatingObservation || isSendingObservation}
               loadingText="Generando..."
               bg="purple.500"
               _hover={{ bg: 'purple.600' }}
@@ -187,7 +281,7 @@ export const GeminiCheck = ({
         </Card.Body>
       </Card.Root>
 
-      <Card.Root gridColumn={{ base: 'span 1', xl: 'span 2' }}>
+      <Card.Root gridColumn={{ base: 'span 1', xl: 'span 2' }} h="463px">
         <Card.Header
           bg="gray.50"
           p="6"
@@ -201,11 +295,58 @@ export const GeminiCheck = ({
             </Heading>
           </Flex>
         </Card.Header>
-        <Card.Body p="6">
-          <Alert
-            status="warning"
-            title="En desarrollo: Redactar sus observaciones sobre el análisis generado."
+        <Card.Body p="6" display="flex" flexDirection="column" h="80%">
+          <Textarea
+            placeholder="Escriba sus observaciones aquí..."
+            value={observation}
+            onChange={(e) => setObservation(e.target.value)}
+            resize="none"
           />
+          <Flex justify="flex-end" gap="2" my="4">
+            <Button
+              size="sm"
+              px="6"
+              loading={isSendingObservation}
+              onClick={handleSendObservation}
+              disabled={
+                !observation || isGeneratingReport || isValidatingObservation
+              }
+              loadingText="Generando..."
+              bg="blue.500"
+              _hover={{ bg: 'blue.600' }}
+            >
+              Enviar
+            </Button>
+            <Button
+              size="sm"
+              px="6"
+              loading={isValidatingObservation}
+              onClick={handleValidateObservation}
+              disabled={!observation || !aiReport || isGeneratingReport}
+              loadingText="Generando..."
+              bg="green.500"
+              _hover={{ bg: 'green.600' }}
+            >
+              Validar
+            </Button>
+          </Flex>
+          <Box
+            border="1px solid"
+            borderColor="gray.200"
+            p="3"
+            overflowY="auto"
+            flex="1"
+          >
+            {aiValidate ? (
+              <Box whiteSpace="pre-line" fontSize="md" color="gray.700">
+                {formatReport(aiValidate.validation)}
+              </Box>
+            ) : (
+              <Text color="gray.500" fontStyle="italic">
+                Genere un la validación de Gemini para su observación.
+              </Text>
+            )}
+          </Box>
         </Card.Body>
       </Card.Root>
     </SimpleGrid>

@@ -27,3 +27,13 @@ export interface GenerateReportRequest {
     alternative: string;
   }[];
 }
+
+export interface ValidateObservationRequest {
+  sessionId: string;
+  observation: string;
+}
+
+export interface SendObservationRequest {
+  testPerformedId: number;
+  content: string;
+}
